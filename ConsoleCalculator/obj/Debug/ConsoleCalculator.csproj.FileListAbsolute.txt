@@ -1,0 +1,9 @@
+C:\Users\Sydora\documents\visual studio 2015\Projects\Home_Practice\ConsoleCalculator\bin\Debug\ConsoleCalculator.exe.config
+C:\Users\Sydora\documents\visual studio 2015\Projects\Home_Practice\ConsoleCalculator\bin\Debug\ConsoleCalculator.exe
+C:\Users\Sydora\documents\visual studio 2015\Projects\Home_Practice\ConsoleCalculator\bin\Debug\ConsoleCalculator.pdb
+C:\Users\Sydora\documents\visual studio 2015\Projects\Home_Practice\ConsoleCalculator\obj\Debug\ConsoleCalculator.csprojResolveAssemblyReference.cache
+C:\Users\Sydora\documents\visual studio 2015\Projects\Home_Practice\ConsoleCalculator\obj\Debug\ConsoleCalculator.exe
+C:\Users\Sydora\documents\visual studio 2015\Projects\Home_Practice\ConsoleCalculator\obj\Debug\ConsoleCalculator.pdb
+F:\Обучение\C#\GitRepository\HomeWorks\ConsoleCalculator\bin\Debug\ConsoleCalculator.exe.config
+F:\Обучение\C#\GitRepository\HomeWorks\ConsoleCalculator\obj\Debug\ConsoleCalculator.exe
+F:\Обучение\C#\GitRepository\HomeWorks\ConsoleCalculator\obj\Debug\ConsoleCalculator.pdb
