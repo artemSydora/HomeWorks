@@ -12,11 +12,11 @@ namespace ConsoleCalculator
         string postfixNotationExpression;
         char[] infixNotationExpression, operators = { '(', ')', '+', '-', '*', '/', '^'};
 
-        public PostfixNotationExpression(string prefixNotationExpression)
+        public PostfixNotationExpression(string infixNotationExpression)
         {
-            this.infixNotationExpression = prefixNotationExpression.ToCharArray();
+            this.infixNotationExpression = infixNotationExpression.ToCharArray();
             postfixNotationExpression = null;
-            stack = new Stack(prefixNotationExpression.Length);
+            stack = new Stack(infixNotationExpression.Length);
         }
 
         
