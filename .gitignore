@@ -1,0 +1,4 @@
+#Ignore list
+
+ConsoleCalculator/bin/
+ConsoleCalculator/obj/
