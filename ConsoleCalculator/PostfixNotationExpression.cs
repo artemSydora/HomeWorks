@@ -3,28 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections;
 
 namespace ConsoleCalculator
 {
     class PostfixNotationExpression
     {
-        Stack stack;
-        string postfixNotationExpression;
-        char[] infixNotationExpression, operators = { '(', ')', '+', '-', '*', '/', '^'};
+        private Stack<char> _stack;
+        private string _postfixNotationExpression;
+        private char[] _operators = { '(', ')', '+', '-', '*', '/', '^'};
 
-        public PostfixNotationExpression(string infixNotationExpression)
+        //Метод возвращает приоритет оператора
+        private byte _GetPriority(char symbol)
         {
-            this.infixNotationExpression = infixNotationExpression.ToCharArray();
-            postfixNotationExpression = null;
-            stack = new Stack(infixNotationExpression.Length);
-        }
-
-        
-        private byte GetPriority(char oper)
-        {
-            switch (oper)
+            switch (symbol)
             {
-                case '(':
+                case '(': 
                 case ')':
                     return 0;
                 case '+':
@@ -37,14 +31,15 @@ namespace ConsoleCalculator
                     return 3;
                 default:
                     return 4;
-
             }
         }
-        private bool IsOperator(char symbol)
+
+        //Метод возвращает true, если проверяемый символ - оператор
+        private bool _IsOperator(char symbol)
         {
-            foreach(char oper in operators)
+            foreach(char oper in _operators)
             {
-                if (symbol == oper)
+                if (oper == symbol)
                 {
                     return true;
                 }
@@ -52,70 +47,81 @@ namespace ConsoleCalculator
             return false;
         }
 
-        // Преобразование из префиксного в постфиксное выражение 
-        public string ConvertToPostfixNotationExpression()
+        //Метод возвращает true, если проверяемый символ - разделитель ("пробел" или "равно")
+        private bool _IsDelimeter(char symbol)
         {
-            
-            foreach(char symbol in infixNotationExpression)
-            {
-                // Если символ является числом, добавляем его к выходной строке;
-                if (char.IsDigit(symbol))
-                {
-                    postfixNotationExpression += symbol;
-                } else
-
-                //Если символ является символом функции, помещаем его в стек;
-                if (IsOperator(symbol))
-                {
-                    
-                    //Если символ является закрывающей скобкой:
-                    /*До тех пор, пока верхним элементом стека не станет открывающая скобка, выталкиваем элементы из стека 
-                    в выходную строку. При этом открывающая скобка удаляется из стека, но в выходную строку не добавляется. 
-                    Если стек закончился раньше, чем мы встретили открывающую скобку, это означает, что в выражении либо 
-                    неверно поставлен разделитель, либо не согласованы скобки.*/
-                    if (symbol == ')')
-                    {
-                        //Если символ является открывающей скобкой, помещаем его в стек;
-                        while (stack.Peek() != '(')
-                        {
-                            postfixNotationExpression += stack.Pop();
-                            
-                        }
-                    }
-
-                    else
-                    {
-                        stack.Push(symbol);
-                    }
-                    
-                }// else
-               // if ()
-            }
-            while(stack.GetStackTopIndex() != 0)
-            {
-                postfixNotationExpression += stack.Pop();
-            }
-            return postfixNotationExpression;
+            if(" =".IndexOf(symbol) != -1)
+                return true;
+            return false;
         }
-        
-                   
-                    
-                    
-                   
-                   
-                //for(int y = 0; y < digits.Length; y++)
-                 
-                    
-                   
 
-        
-
-        public void Show()
+        // Преобразование из префиксного в постфиксное выражение 
+        public string ConvertToPostfixNotationExpressionstring (string infixNotationExpression)   
         {
-            
-                Console.Write(postfixNotationExpression);
-           
-            
+            _postfixNotationExpression = string.Empty;
+            _stack = new Stack<char>();
+            for (int i = 0; i < infixNotationExpression.Length; i++) //Для каждого символа в входной строке
+                {
+                //Разделители пропускаем
+                    if (_IsDelimeter(infixNotationExpression[i]))
+                {
+                    continue;
+                }
+
+                //Если символ - цифра, то считываем все число
+                if (char.IsDigit(infixNotationExpression[i]))
+                {
+                    while (!_IsDelimeter(infixNotationExpression[i]) && !_IsOperator(infixNotationExpression[i]))
+                    {
+                        _postfixNotationExpression += infixNotationExpression[i];
+                        i++;
+                        if (i == infixNotationExpression.Length)
+                            break;
+                    }
+                    _postfixNotationExpression += " ";
+                    i--;
+                }
+
+                //Если символ - оператор
+                if (_IsOperator(infixNotationExpression[i])) // Если оператор
+                {
+                    if (infixNotationExpression[i] == '(') //Если символ - открывающая скобка
+                    {
+                        _stack.Push(infixNotationExpression[i]); //Записываем её в стек
+                    }
+                    else
+                    if (infixNotationExpression[i] == ')') //Если символ - закрывающая скобка
+                    {
+                        // Выписываем все операторы до открывающей скобки в строку
+                        char s = (char)_stack.Pop();
+
+                        while (s != '(')
+                        {
+                            _postfixNotationExpression += s.ToString() + ' ';
+                            s = (char)_stack.Pop();
+                        }
+
+                    }
+                    else //Если любой другой оператор
+                    {      
+                        if (_stack.Count > 0) //Если в стеке есть элементы
+                            if (_GetPriority(infixNotationExpression[i]) <= _GetPriority((char)_stack.Peek())) //И если приоритет нашего оператора меньше или равен приоритету оператора на вершине стека
+                                _postfixNotationExpression += _stack.Pop().ToString() + " "; //То добавляем последний оператор из стека в строку с выражением
+
+                        _stack.Push(char.Parse(infixNotationExpression[i].ToString())); //Если стек пуст, или же приоритет оператора выше - добавляем операторов на вершину стека
+                    } 
+                }
+            }
+            //Когда прошли по всем символам, выкидываем из стека все оставшиеся там операторы в строку
+            while (_stack.Count > 0)
+            {
+                _postfixNotationExpression += _stack.Pop() + " ";
+            }
+            return _postfixNotationExpression;
+        }
+        public void Show()
+        {   
+                Console.Write(_postfixNotationExpression);
         }
     }
 }
