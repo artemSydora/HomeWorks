@@ -10,10 +10,9 @@ namespace ConsoleCalculator
     {
         static void Main(string[] args)
         {
-            PostfixNotationExpression expression = new PostfixNotationExpression();
-            expression.ConvertToPostfixNotationExpressionstring("1 - 2 * (4 + 3)");
+            Calculation expression = new Calculation();
             expression.Show();
-            Console.ReadKey();
+            //Console.ReadKey();
         }
     }
 }
