@@ -10,14 +10,14 @@ namespace ConsoleCalculator
     class PostfixExpression
     {
         private Stack<char> _stack;
-        public string postfixExpression, infixExpression;
-        private char[] _operators = { '(', ')', '+', '-', '*', '/', '^'};
+        public string postfixExpression, infixExpression, input;
+        private char[] _operators = { '(', ')', '+', '-', '*', '/', '^' };
 
         private byte GetOperatorPriority(char symbol)
         {
             switch (symbol)
             {
-                case '(': 
+                case '(':
                 case ')':
                     return 0;
                 case '+':
@@ -33,10 +33,9 @@ namespace ConsoleCalculator
             }
         }
 
-        //Метод возвращает true, если проверяемый символ - оператор
         public bool IsOperator(char symbol)
         {
-            foreach(char oper in _operators)
+            foreach (char oper in _operators)
             {
                 if (oper == symbol)
                 {
@@ -46,73 +45,82 @@ namespace ConsoleCalculator
             return false;
         }
 
-        //Метод возвращает true, если проверяемый символ - разделитель ("пробел" или "равно")
         public bool IsDelimeter(char symbol)
         {
-            if(" =".IndexOf(symbol) != -1)
+            if (" =".IndexOf(symbol) != -1)
                 return true;
             return false;
         }
 
-        // Преобразование из префиксного в постфиксное выражение 
-        public string ConvertToPostfixExpression (string infixExpression)   
+        public string ConvertToPostfixExpression(string input)
         {
-            this.infixExpression = infixExpression;
-            postfixExpression = string.Empty;
-            _stack = new Stack<char>();
-            for (int i = 0; i < infixExpression.Length; i++) //Для каждого символа в входной строке
+                infixExpression = string.Empty;
+                postfixExpression = string.Empty;
+                _stack = new Stack<char>();
+                for (int i = 0; i < input.Length; i++)
                 {
-                //Разделители пропускаем
+                    if (i == 0 && input[0] == '-')
+                    {
+                        infixExpression += '0';
+                    }
+                    if ((i < input.Length - 2) && char.IsDigit(input[i + 2]) && IsOperator(input[i]) && IsOperator(input[i + 1]) && input[i + 1] == '-' && input[i] == '(')
+                    {
+                        infixExpression += '0';
+                    }
+
+                    infixExpression += input[i];
+
+
+                }
+
+                for (int i = 0; i < infixExpression.Length; i++)
+                {
                     if (IsDelimeter(infixExpression[i]))
-                {
-                    continue;
-                }
-
-                //Если символ - цифра, то считываем все число
-                if (char.IsDigit(infixExpression[i]))
-                {  
-                    while (!IsDelimeter(infixExpression[i]) && !IsOperator(infixExpression[i]))
                     {
-                        postfixExpression += infixExpression[i];
-                        i++;
-                        if (i == infixExpression.Length)
-                            break;
+                        continue;
                     }
-                    postfixExpression += " ";
-                    i--;
-                }
 
-                //Если символ - оператор
-                if (IsOperator(infixExpression[i])) // Если оператор
-                { 
-                    if (infixExpression[i] == '(') //Если символ - открывающая скобка
+                    if (char.IsDigit(infixExpression[i]))
                     {
-                        _stack.Push(infixExpression[i]); //Записываем её в стек
-                    }
-                    else
-                    if (infixExpression[i] == ')') //Если символ - закрывающая скобка
-                    {
-                        // Выписываем все операторы до открывающей скобки в строку
-                        char s = (char)_stack.Pop();
-
-                        while (s != '(')
+                        while (!IsDelimeter(infixExpression[i]) && !IsOperator(infixExpression[i]))
                         {
-                            postfixExpression += s.ToString() + ' ';
-                            s = (char)_stack.Pop();
+                            postfixExpression += infixExpression[i];
+                            i++;
+                            if (i == infixExpression.Length)
+                                break;
                         }
-
+                        postfixExpression += " ";
+                        i--;
                     }
-                    else //Если любой другой оператор
-                    {      
-                        if (_stack.Count > 0) //Если в стеке есть элементы
-                            if (GetOperatorPriority(infixExpression[i]) <= GetOperatorPriority((char)_stack.Peek())) //И если приоритет нашего оператора меньше или равен приоритету оператора на вершине стека
-                                postfixExpression += _stack.Pop().ToString() + " "; //То добавляем последний оператор из стека в строку с выражением
 
-                        _stack.Push(char.Parse(infixExpression[i].ToString())); //Если стек пуст, или же приоритет оператора выше - добавляем операторов на вершину стека
-                    } 
+                    if (IsOperator(infixExpression[i]))
+                    {
+                        if (infixExpression[i] == '(')
+                        {
+                            _stack.Push(infixExpression[i]);
+                        }
+                        else
+                        if (infixExpression[i] == ')')
+                        {
+                            char s = (char)_stack.Pop();
+
+                            while (s != '(')
+                            {
+                                postfixExpression += s.ToString() + ' ';
+                                s = (char)_stack.Pop();
+                            }
+
+                        }
+                        else
+                        {
+                            if (_stack.Count > 0)
+                                if (GetOperatorPriority(infixExpression[i]) <= GetOperatorPriority((char)_stack.Peek()))
+                                    postfixExpression += _stack.Pop().ToString() + " ";
+
+                            _stack.Push(char.Parse(infixExpression[i].ToString()));
+                        }
+                    }
                 }
-            }
-            //Когда прошли по всем символам, выкидываем из стека все оставшиеся там операторы в строку
             while (_stack.Count > 0)
             {
                 postfixExpression += _stack.Pop() + " ";
@@ -120,6 +128,6 @@ namespace ConsoleCalculator
             return postfixExpression;
         }
 
-        
+
     }
 }
