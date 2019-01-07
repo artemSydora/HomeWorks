@@ -7,10 +7,12 @@ using System.Collections;
 
 namespace ConsoleCalculator
 {
-    class PostfixExpression
+    class PostfixNotationExpression
     {
         private Stack<char> _stack;
-        public string postfixExpression, infixExpression, input;
+        public string PostfixExpression { get; set; }
+        public string InfixExpression { get; set; }
+        public string Input { get; set; }
         private char[] _operators = { '(', ')', '+', '-', '*', '/', '^' };
 
         private byte GetOperatorPriority(char symbol)
@@ -52,61 +54,58 @@ namespace ConsoleCalculator
             return false;
         }
 
-        public string ConvertToPostfixExpression(string input)
+        public string ConvertToPostfixExpression(string Input)
         {
-                infixExpression = string.Empty;
-                postfixExpression = string.Empty;
+                InfixExpression = string.Empty;
+                PostfixExpression = string.Empty;
                 _stack = new Stack<char>();
-                for (int i = 0; i < input.Length; i++)
+                for (int i = 0; i < Input.Length; i++)
                 {
-                    if (i == 0 && input[0] == '-')
+                    if (i == 0 && Input[0] == '-')
                     {
-                        infixExpression += '0';
+                        InfixExpression += '0';
                     }
-                    if ((i < input.Length - 2) && char.IsDigit(input[i + 2]) && IsOperator(input[i]) && IsOperator(input[i + 1]) && input[i + 1] == '-' && input[i] == '(')
+                    if ((i < Input.Length - 2) && char.IsDigit(Input[i + 2]) && IsOperator(Input[i]) && IsOperator(Input[i + 1]) && Input[i + 1] == '-' && Input[i] == '(')
                     {
-                        infixExpression += '0';
+                        InfixExpression += '0';
                     }
 
-                    infixExpression += input[i];
+                    InfixExpression += Input[i];
 
 
                 }
 
-                for (int i = 0; i < infixExpression.Length; i++)
+                for (int i = 0; i < InfixExpression.Length; i++)
                 {
-                    if (IsDelimeter(infixExpression[i]))
-                    {
+                    char symbol = InfixExpression[i];
+                    if (IsDelimeter(symbol))
                         continue;
-                    }
-
-                    if (char.IsDigit(infixExpression[i]))
+                    if (char.IsDigit(symbol))
                     {
-                        while (!IsDelimeter(infixExpression[i]) && !IsOperator(infixExpression[i]))
+                        while (!IsDelimeter(symbol) && !IsOperator(symbol))
                         {
-                            postfixExpression += infixExpression[i];
+                            PostfixExpression += InfixExpression[i];
                             i++;
-                            if (i == infixExpression.Length)
+                            if (i == InfixExpression.Length)
                                 break;
                         }
-                        postfixExpression += " ";
+                        PostfixExpression += " ";
                         i--;
                     }
-
-                    if (IsOperator(infixExpression[i]))
+                    if (IsOperator(InfixExpression[i]))
                     {
-                        if (infixExpression[i] == '(')
+                        if (InfixExpression[i] == '(')
                         {
-                            _stack.Push(infixExpression[i]);
+                            _stack.Push(InfixExpression[i]);
                         }
                         else
-                        if (infixExpression[i] == ')')
+                        if (InfixExpression[i] == ')')
                         {
                             char s = (char)_stack.Pop();
 
                             while (s != '(')
                             {
-                                postfixExpression += s.ToString() + ' ';
+                                PostfixExpression += s.ToString() + ' ';
                                 s = (char)_stack.Pop();
                             }
 
@@ -114,18 +113,18 @@ namespace ConsoleCalculator
                         else
                         {
                             if (_stack.Count > 0)
-                                if (GetOperatorPriority(infixExpression[i]) <= GetOperatorPriority((char)_stack.Peek()))
-                                    postfixExpression += _stack.Pop().ToString() + " ";
+                                if (GetOperatorPriority(InfixExpression[i]) <= GetOperatorPriority((char)_stack.Peek()))
+                                    PostfixExpression += _stack.Pop().ToString() + " ";
 
-                            _stack.Push(char.Parse(infixExpression[i].ToString()));
+                            _stack.Push(char.Parse(InfixExpression[i].ToString()));
                         }
                     }
                 }
             while (_stack.Count > 0)
             {
-                postfixExpression += _stack.Pop() + " ";
+                PostfixExpression += _stack.Pop() + " ";
             }
-            return postfixExpression;
+            return PostfixExpression;
         }
 
 

@@ -10,41 +10,39 @@ namespace ConsoleCalculator
     class Calculation
     {
         Stack<double> stack;
-        public string postfixExpression;
+        public string PostfixExpression { get; set; }
         double result = 0;
-        PostfixExpression expression = new PostfixExpression();
+        PostfixNotationExpression expression = new PostfixNotationExpression();
         
-        private double GetResult(string infixExpression)
+        private double GetResult(string InfixExpression)
         {
             stack = new Stack<double> { };
-            postfixExpression = expression.ConvertToPostfixExpression(infixExpression);
-
+            PostfixExpression = expression.ConvertToPostfixExpression(InfixExpression);
+            
             try
             {
-                for (int i = 0; i < postfixExpression.Length; i++)
+                for (int i = 0; i < PostfixExpression.Length; i++)
                 {
-                    if (expression.IsDelimeter(postfixExpression[i]))
-                    {
+                    if (expression.IsDelimeter(PostfixExpression[i]))
                         continue;
-                    }
                     else          
-                    if (char.IsDigit(postfixExpression[i]))
+                    if (char.IsDigit(PostfixExpression[i]))
                     {
                         string number = string.Empty;
-                        while (!expression.IsDelimeter(postfixExpression[i]) && !expression.IsOperator(postfixExpression[i]))
+                        while (!expression.IsDelimeter(PostfixExpression[i]) && !expression.IsOperator(PostfixExpression[i]))
                         {
-                            number += postfixExpression[i];
+                            number += PostfixExpression[i];
                             i++;
-                            if (i == postfixExpression.Length)
+                            if (i == PostfixExpression.Length)
                                 break;
                         }
                         stack.Push(Convert.ToDouble(number));
                         i--;
                     }
-                    else
-                    if (expression.IsOperator(postfixExpression[i]))
+else
+                    if (expression.IsOperator(PostfixExpression[i]))
                     {
-                        switch (postfixExpression[i])
+                        switch (PostfixExpression[i])
                         {
                             case '+':
                                 {
@@ -72,13 +70,8 @@ namespace ConsoleCalculator
                                     double a = stack.Pop();
                                     double b = stack.Pop();
                                     if (a == 0)
-                                    {
                                         throw new DivideByZeroException();
-                                    }
-                                    else
-                                    {
-                                        result = b / a;
-                                    }
+                                    result = b / a;
                                     break;
                                 }
                             case '^':
@@ -96,13 +89,9 @@ namespace ConsoleCalculator
             catch (Exception e)
             {
                 if (e is DivideByZeroException)
-                {
                     Console.WriteLine("Нельзя делить на ноль");
-                }
                 if (e is FormatException)
-                {
                     Console.WriteLine("Неверные входные данные");
-                }
             }
 
             return result;
@@ -111,12 +100,12 @@ namespace ConsoleCalculator
         public void Show()
         {   
             
-            while (expression.input != "Exit")
+            while (expression.Input != "Exit")
             {
                 Console.Write("Введите выражение: ");
-                expression.input = Console.ReadLine();
-                GetResult(expression.input);
-                Console.WriteLine("Постфиксная форма выражения: {0}", postfixExpression);
+                expression.Input = Console.ReadLine();
+                GetResult(expression.Input);
+                Console.WriteLine("Постфиксная форма выражения: {0}", PostfixExpression);
                 Console.WriteLine("Результат: {0}", result);
                 Console.WriteLine();
             }
