@@ -10,44 +10,45 @@ namespace ConsoleCalculator
     class Calculation
     {
         Stack<double> stack;
-        public string postfixExpression;
+        public string PostfixExpression { get; set; }
         double result = 0;
-        PostfixExpression expression = new PostfixExpression();
+        PostfixNotationExpression expression = new PostfixNotationExpression();
         
-        public double GetResult(string infixExpression)
+        private double GetResult(string InfixExpression)
         {
             stack = new Stack<double> { };
-            postfixExpression = expression.ConvertToPostfixExpression(infixExpression);
-
-            for (int i = 0; i < postfixExpression.Length; i++)
+            PostfixExpression = expression.ConvertToPostfixExpression(InfixExpression);
+            
+            try
             {
-                if (expression.IsDelimeter(postfixExpression[i]))
+                for (int i = 0; i < PostfixExpression.Length; i++)
                 {
-                    continue;
-                } else
-                if(char.IsDigit(postfixExpression[i]))
-                {
-                    string number = string.Empty;
-                    while (!expression.IsDelimeter(postfixExpression[i]) && !expression.IsOperator(postfixExpression[i]))
+                    if (expression.IsDelimeter(PostfixExpression[i]))
+                        continue;
+                    else          
+                    if (char.IsDigit(PostfixExpression[i]))
                     {
-                        number += postfixExpression[i];
-                        i++;
-                        if (i == postfixExpression.Length)
-                            break;
-                    }  
-                    stack.Push(Convert.ToDouble(number));
-                    i--;
-                } else
-                if(expression.IsOperator(postfixExpression[i]))
-                {   
-                        switch (postfixExpression[i])
+                        string number = string.Empty;
+                        while (!expression.IsDelimeter(PostfixExpression[i]) && !expression.IsOperator(PostfixExpression[i]))
+                        {
+                            number += PostfixExpression[i];
+                            i++;
+                            if (i == PostfixExpression.Length)
+                                break;
+                        }
+                        stack.Push(Convert.ToDouble(number));
+                        i--;
+                    }
+else
+                    if (expression.IsOperator(PostfixExpression[i]))
+                    {
+                        switch (PostfixExpression[i])
                         {
                             case '+':
                                 {
                                     double a = stack.Pop();
                                     double b = stack.Pop();
                                     result = a + b;
-                                    stack.Push(result);
                                     break;
                                 }
                             case '-':
@@ -55,7 +56,6 @@ namespace ConsoleCalculator
                                     double a = stack.Pop();
                                     double b = stack.Pop();
                                     result = b - a;
-                                    stack.Push(result);
                                     break;
                                 }
                             case '*':
@@ -63,34 +63,49 @@ namespace ConsoleCalculator
                                     double a = stack.Pop();
                                     double b = stack.Pop();
                                     result = a * b;
-                                    stack.Push(result);
                                     break;
                                 }
                             case '/':
                                 {
                                     double a = stack.Pop();
                                     double b = stack.Pop();
+                                    if (a == 0)
+                                        throw new DivideByZeroException();
                                     result = b / a;
-                                    stack.Push(result);
+                                    break;
+                                }
+                            case '^':
+                                {
+                                    double a = stack.Pop();
+                                    double b = stack.Pop();
+                                    result = Math.Pow(b, a);
                                     break;
                                 }
                         }
-                    
+                        stack.Push(result);
+                    } 
                 }
-                
             }
+            catch (Exception e)
+            {
+                if (e is DivideByZeroException)
+                    Console.WriteLine("Нельзя делить на ноль");
+                if (e is FormatException)
+                    Console.WriteLine("Неверные входные данные");
+            }
+
             return result;
         }
        
         public void Show()
         {   
             
-            while (expression.infixExpression != "Exit")
+            while (expression.Input != "Exit")
             {
                 Console.Write("Введите выражение: ");
-                expression.infixExpression = Console.ReadLine();
-                GetResult(expression.infixExpression);
-                Console.WriteLine("Постфиксная форма выражения: {0}", postfixExpression);
+                expression.Input = Console.ReadLine();
+                GetResult(expression.Input);
+                Console.WriteLine("Постфиксная форма выражения: {0}", PostfixExpression);
                 Console.WriteLine("Результат: {0}", result);
                 Console.WriteLine();
             }
