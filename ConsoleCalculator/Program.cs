@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConsoleCalculator
 {
@@ -10,9 +6,30 @@ namespace ConsoleCalculator
     {
         static void Main(string[] args)
         {
-            Calculation expression = new Calculation();
-            expression.Show();
-            //Console.ReadKey();
+            string input = null;
+            var calc = new Calculator.Calculator(); 
+
+            while (!string.Equals(input, "exit", StringComparison.OrdinalIgnoreCase))
+            {
+                Console.Write("input expression: ");
+                input = Console.ReadLine();
+                double result;
+
+                try
+                {
+                    result = calc.Calculate(input);
+                }
+                catch (Exception ex)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Error > " + ex.Message);
+                    Console.ResetColor();
+
+                    continue;
+                }
+
+                Console.WriteLine("> " + result);
+            }
         }
     }
 }
