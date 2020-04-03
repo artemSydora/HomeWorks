@@ -45,6 +45,8 @@ namespace Calculator
                         {
                             break;
                         }
+
+                        symbol = infixExpression[i];
                     }
 
                     postfixExpression += " ";
