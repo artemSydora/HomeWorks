@@ -5,14 +5,54 @@ namespace Calculator
 {
     public class Calculator
     {
-        private static Dictionary<char, Func<Stack<double>, double>> Operations = new Dictionary<char, Func<Stack<double>, double>>
-        {
-            { '+', stack => stack.Pop() + stack.Pop() },
-            { '-', stack => -stack.Pop() + stack.Pop() },
-            { '*', stack => stack.Pop() * stack.Pop() },
-            { '/', stack => (1 / stack.Pop()) * stack.Pop() },
-            { '^', stack => Math.Pow(stack.Pop(), stack.Pop()) }
-        };
+        // v1 start
+        //private static Dictionary<char, Func<Stack<double>, double>> Operations = new Dictionary<char, Func<Stack<double>, double>>
+        //{
+        //    { '+', stack => stack.Pop() + stack.Pop() },
+        //    { '-', stack => -stack.Pop() + stack.Pop() },
+        //    { '*', stack => stack.Pop() * stack.Pop() },
+        //    { '/', stack => (1 / stack.Pop()) * stack.Pop() },
+        //    { '^', stack => Math.Pow(stack.Pop(), stack.Pop()) }
+        //};
+        // v1 end
+
+        // v2 start
+        //private static Dictionary<char, Func<Stack<double>, double>> Operations;
+        //static Calculator()
+        //{
+        //    Operations = new Dictionary<char, Func<Stack<double>, double>>();
+        //    Operations.Add('+', MakeAddition);
+        //    Operations.Add('-', MakeSubstraction);
+        //    Operations.Add('*', MakeMutliplication);
+        //    Operations.Add('/', MakeDivision);
+        //    Operations.Add('^', MakePower);
+        //}
+
+        //private static double MakeAddition(Stack<double> stack)
+        //{
+        //    return stack.Pop() + stack.Pop();
+        //}
+
+        //private static double MakeSubstraction(Stack<double> stack)
+        //{
+        //    return -stack.Pop() + stack.Pop();
+        //}
+
+        //private static double MakeMutliplication(Stack<double> stack)
+        //{
+        //    return stack.Pop() * stack.Pop();
+        //}
+
+        //private static double MakeDivision(Stack<double> stack)
+        //{
+        //    return (1 / stack.Pop()) * stack.Pop();
+        //}
+
+        //private static double MakePower(Stack<double> stack)
+        //{
+        //    return Math.Pow(stack.Pop(), stack.Pop());
+        //}
+        // v2 end
 
         public double Calculate(string input)
         {
@@ -38,13 +78,43 @@ namespace Calculator
 
                 if (OperationToken.IsOperationToken(ch))
                 {
-                    Func<Stack<double>, double> operation = Operations[ch];
-                    result = operation(stack);
+                    // v1 and v2 uses this
+                    //Func<Stack<double>, double> operation = Operations[ch];
+                    // result = operation(stack);
+
+                    // v3
+                    result = MakeOperation(ch, stack);
+
                     stack.Push(result);
                 }
             }
 
             return result;
+        }
+
+        // v3
+        private static double MakeOperation(char operation, Stack<double> stack)
+        {
+            switch (operation)
+            {
+                case '+':
+                    return stack.Pop() + stack.Pop();
+
+                case '-':
+                    return -stack.Pop() + stack.Pop();
+
+                case '*': 
+                    return stack.Pop() * stack.Pop();
+
+                case '/': 
+                    return (1 / stack.Pop()) * stack.Pop();
+
+                case '^': 
+                    return Math.Pow(stack.Pop(), stack.Pop());
+
+                default:
+                    throw new InvalidOperationException(string.Format("Unknown operation: '{0}'", operation));
+            }
         }
     }
 }
