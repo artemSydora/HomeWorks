@@ -5,12 +5,16 @@ using System.Linq;
 
 namespace LearnToCode.Collections
 {
-    public class MyList<T>:IEnumerable
+    public class MyList<T> : IEnumerable
     {
-        T[] _customList = new T[1], _tempList;
-        int _startPosition = -1;
-        int _position = -1;
-        
+        T[] _customList, _tempList;
+        int _position;
+        public MyList()
+        {
+            Count = 0;
+            _position = -1;
+            _customList = new T[1];
+        }
         public int Count { get; private set; }
 
         public T this[int index]
@@ -34,10 +38,23 @@ namespace LearnToCode.Collections
 
         public void Add(T item)
         {
-            Array.Resize(ref _customList, Count);
-            _position++;
+
+            if (Count == 0)
+            {
+                Count++;
+                _position++;
+            }
+            else
+                {
+                _tempList = _customList;
+                Count++;
+                _customList = new T[Count];
+                for (; _position < _tempList.Length; _position++)
+                {
+                    _customList[0] = _tempList[_position];
+                } 
+            }
             _customList[_position] = item;
-            Count++;
         }
 
         public void Clear()
@@ -49,56 +66,27 @@ namespace LearnToCode.Collections
 
         public int IndexOf(T item)
         {
-            for(int i = 0; i < _customList.Length; i++)
+            bool firstOccurrence = true;
+            _position = -1;
+            while (firstOccurrence)
             {
-                if (item.Equals(_customList[i]))
-                    return i;
+                _position++;
+                if (item.Equals(_customList[_position]))
+                {
+                    firstOccurrence = false;
+                }
             }
-            return -1;
+            return _position;
         }
 
-        public void InsertAt(int index, T item)
+       public void InsertAt(int index, T item)
         {
-            
+        throw new NotSupportedException();
         }
 
         public void Remove(T item)
         {
-            _tempList = _customList;
-            for(int i = 0; i < _tempList.Length; i++)
-            {
-                if (item.Equals(_tempList[i]))
-                    {
-                        Count--;
-                        break;
-                    }                
-       
-             }
-
-            if (Count.Equals(_tempList.Length))
-            {
-                Console.WriteLine("Error! Item missing.");
-            }
-            else
-            {
-                _customList = new T[Count];
-
-                for (int i = 0; i < _tempList.Length; )
-                    for(int j = 0; j < _customList.Length; j++)
-                {
-                    if (item.Equals(_tempList[i]))
-                    {
-                            j--;
-                            i++;
-                        continue;
-                    }
-                    _customList[j] = _tempList[i];
-                        i++;
-                }
-            }
-
-           
-            
+            throw new NotImplementedException();
         }
 
         public IEnumerator GetEnumerator()
@@ -106,4 +94,5 @@ namespace LearnToCode.Collections
             return _customList.GetEnumerator();
         }       
     }
+
 }
